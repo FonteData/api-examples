@@ -4,9 +4,9 @@ info:
   version: "1.0"
   description: |
     Brazilian data intelligence REST API aggregating 108+ public and private data sources.
-    Provides CNPJ, CPF, KYC, compliance, judicial records, and international sanctions data.
-    Pre-paid credit model — no subscription, no minimum commitment.
-    Free account includes R$50 in credits at signup.
+    CNPJ, CPF, KYC, compliance, judicial records and international sanctions.
+    Pre-paid credits — no subscription, no minimum commitment.
+    Free account: R$50 in credits at signup, no credit card required.
   contact:
     name: FonteData Support
     url: https://wa.me/5511991220174
@@ -18,7 +18,7 @@ info:
     url: https://fontedata.com/logo.svg
 
 externalDocs:
-  description: Full documentation
+  description: Full API documentation
   url: https://fontedata.com/docs
 
 servers:
@@ -29,7 +29,26 @@ security:
   - ApiKeyAuth: []
 
 tags:
-
+  - name: Ambiental
+  - name: Antifraude
+  - name: Banco Central
+  - name: Beneficios Sociais
+  - name: Certidoes
+  - name: Comercial
+  - name: Compliance
+  - name: Credito
+  - name: Eleitoral
+  - name: Fiscal
+  - name: Internacional
+  - name: Pessoa Fisica
+  - name: Pessoa Juridica
+  - name: Processos Judiciais
+  - name: Receita Federal
+  - name: Rural
+  - name: Sancoes Internacionais
+  - name: Trabalho
+  - name: Tribunais
+  - name: Veicular
 
 components:
   securitySchemes:
@@ -41,23 +60,17 @@ components:
 
   headers:
     X-Request-Cost:
-      description: Cost deducted in BRL for this request
-      schema:
-        type: string
-        example: "0.54"
+      description: Cost deducted in BRL
+      schema: {type: string, example: "0.54"}
     X-Balance-Remaining:
       description: Remaining credit balance in BRL
-      schema:
-        type: string
-        example: "47.23"
+      schema: {type: string, example: "47.23"}
     X-Request-Id:
       description: Unique request ID for debugging
-      schema:
-        type: string
+      schema: {type: string}
     X-RateLimit-Remaining-RPM:
-      description: Remaining requests allowed per minute
-      schema:
-        type: integer
+      description: Remaining requests per minute
+      schema: {type: integer}
 
   responses:
     Unauthorized:
@@ -67,9 +80,7 @@ components:
           schema:
             type: object
             properties:
-              error:
-                type: string
-                example: "invalid_api_key"
+              error: {type: string, example: "invalid_api_key"}
     InsufficientBalance:
       description: Insufficient credit balance
       content:
@@ -77,24 +88,2938 @@ components:
           schema:
             type: object
             properties:
-              error:
-                type: string
-                example: "insufficient_balance"
+              error: {type: string, example: "insufficient_balance"}
     NotFound:
       description: Resource not found
     RateLimited:
-      description: Rate limit exceeded — retry after 60 seconds
+      description: Rate limit exceeded
 
   schemas:
     ConsultaResponse:
       type: object
       description: >
-        Consultation response. Schema varies by endpoint — refer to
-        https://fontedata.com/docs for endpoint-specific response schemas.
+        Response varies by endpoint. See https://fontedata.com/docs for
+        endpoint-specific schemas.
       properties:
         cached:
           type: boolean
-          description: Whether this response was served from cache
+          description: Whether served from cache
 
 paths:
 
+  /consulta/ibama-debitos/{documento}:
+    get:
+      tags: [Ambiental]
+      summary: Certidão de débitos ambientais do IBAMA
+      operationId: ibamaDebitos
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: Certidão de débitos ambientais do IBAMA
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/ibama-embargo/{documento}:
+    get:
+      tags: [Ambiental]
+      summary: Certidão de embargos do IBAMA
+      operationId: ibamaEmbargo
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: Certidão de embargos do IBAMA
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/ibama-regularidade/{documento}:
+    get:
+      tags: [Ambiental]
+      summary: Certificado de regularidade ambiental IBAMA
+      operationId: ibamaRegularidade
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: Certificado de regularidade ambiental IBAMA
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/antifraude-pix/{documento}:
+    get:
+      tags: [Antifraude]
+      summary: Titularidade e risco de chave PIX
+      operationId: antifraudePix
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: Titularidade e risco de chave PIX
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 2.33"
+  /consulta/registration-brazil/{documento}:
+    get:
+      tags: [Antifraude]
+      summary: Validação cadastral internacional (Name, Surname, Dob)
+      operationId: registrationBrazil
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: Validação cadastral internacional (Name, Surname, Dob)
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/bc-inabilitados/{cpf}:
+    get:
+      tags: [Banco Central]
+      summary: Inabilitados pelo Banco Central
+      operationId: bcInabilitados
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: CPF (11 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{11}$', example: "12345678900"}
+      responses:
+        "200":
+          description: Inabilitados pelo Banco Central
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/bc-proibidos/{documento}:
+    get:
+      tags: [Banco Central]
+      summary: Proibidos pelo Banco Central
+      operationId: bcProibidos
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: Proibidos pelo Banco Central
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/assistencia-social-pf/{cpf}:
+    get:
+      tags: [Beneficios Sociais]
+      summary: Assistência social PF
+      operationId: assistenciaSocialPf
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: CPF (11 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{11}$', example: "12345678900"}
+      responses:
+        "200":
+          description: Assistência social PF
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 1.13"
+  /consulta/auxilio-emergencial/{cpf}:
+    get:
+      tags: [Beneficios Sociais]
+      summary: Auxílio emergencial
+      operationId: auxilioEmergencial
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: CPF (11 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{11}$', example: "12345678900"}
+      responses:
+        "200":
+          description: Auxílio emergencial
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/auxilio-reconstrucao/{cpf}:
+    get:
+      tags: [Beneficios Sociais]
+      summary: Auxílio reconstrução
+      operationId: auxilioReconstrucao
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: CPF (11 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{11}$', example: "12345678900"}
+      responses:
+        "200":
+          description: Auxílio reconstrução
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/bpc-beneficio/{cpf}:
+    get:
+      tags: [Beneficios Sociais]
+      summary: BPC/LOAS
+      operationId: bpcBeneficio
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: CPF (11 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{11}$', example: "12345678900"}
+      responses:
+        "200":
+          description: BPC/LOAS
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/bolsa-familia/{nis}:
+    get:
+      tags: [Beneficios Sociais]
+      summary: Bolsa Família
+      operationId: bolsaFamilia
+      parameters:
+        - name: nis
+          in: path
+          required: true
+          description: NIS/PIS number
+          schema: {type: string, example: "12345678901"}
+      responses:
+        "200":
+          description: Bolsa Família
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/garantia-safra/{cpf}:
+    get:
+      tags: [Beneficios Sociais]
+      summary: Garantia Safra
+      operationId: garantiaSafra
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: CPF (11 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{11}$', example: "12345678900"}
+      responses:
+        "200":
+          description: Garantia Safra
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/peti-trabalho-infantil/{cpf}:
+    get:
+      tags: [Beneficios Sociais]
+      summary: PETI
+      operationId: petiTrabalhoInfantil
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: CPF (11 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{11}$', example: "12345678900"}
+      responses:
+        "200":
+          description: PETI
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/seguro-defeso/{cpf}:
+    get:
+      tags: [Beneficios Sociais]
+      summary: Seguro Defeso
+      operationId: seguroDefeso
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: CPF (11 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{11}$', example: "12345678900"}
+      responses:
+        "200":
+          description: Seguro Defeso
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/ccd-pf/{cpf}:
+    get:
+      tags: [Certidoes]
+      summary: Certidão de cadastro PF
+      operationId: ccdPf
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: CPF (11 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{11}$', example: "12345678900"}
+      responses:
+        "200":
+          description: Certidão de cadastro PF
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/ccd-pj/{cnpj}:
+    get:
+      tags: [Certidoes]
+      summary: Certidão de cadastro PJ
+      operationId: ccdPj
+      parameters:
+        - name: cnpj
+          in: path
+          required: true
+          description: CNPJ (14 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{14}$', example: "00000000000191"}
+      responses:
+        "200":
+          description: Certidão de cadastro PJ
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/cndir-rural/{documento}:
+    get:
+      tags: [Certidoes]
+      summary: CNDIR rural
+      operationId: cndirRural
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: CNDIR rural
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/cnd-debitos/{documento}:
+    get:
+      tags: [Certidoes]
+      summary: CND débitos
+      operationId: cndDebitos
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: CND débitos
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/cndm-municipal/{documento}:
+    get:
+      tags: [Certidoes]
+      summary: CND municipal
+      operationId: cndmMunicipal
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: CND municipal
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/mpf-certidao/{documento}:
+    get:
+      tags: [Certidoes]
+      summary: Certidão MPF
+      operationId: mpfCertidao
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: Certidão MPF
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/tst-cndt/{documento}:
+    get:
+      tags: [Certidoes]
+      summary: CNDT trabalhista
+      operationId: tstCndt
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: CNDT trabalhista
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/enriquecimento-lead/{documento}:
+    get:
+      tags: [Comercial]
+      summary: Enriquecimento de lead
+      operationId: enriquecimentoLead
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: Enriquecimento de lead
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.24"
+  /consulta/acordos-leniencia/{documento}:
+    get:
+      tags: [Compliance]
+      summary: Acordos de leniência
+      operationId: acordosLeniencia
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: Acordos de leniência
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/bet-safe-compliance/{cpf}:
+    get:
+      tags: [Compliance]
+      summary: Compliance apostas/gambling
+      operationId: betSafeCompliance
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: CPF (11 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{11}$', example: "12345678900"}
+      responses:
+        "200":
+          description: Compliance apostas/gambling
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 1.08"
+  /consulta/cnia-improbidade/{documento}:
+    get:
+      tags: [Compliance]
+      summary: Improbidade administrativa
+      operationId: cniaImprobidade
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: Improbidade administrativa
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/cgu-consulta/{documento}:
+    get:
+      tags: [Compliance]
+      summary: CGU consolidada
+      operationId: cguConsulta
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: CGU consolidada
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/ceis-sancoes/{documento}:
+    get:
+      tags: [Compliance]
+      summary: CEIS sanções
+      operationId: ceisSancoes
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: CEIS sanções
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/cnep-sancoes/{documento}:
+    get:
+      tags: [Compliance]
+      summary: CNEP sanções
+      operationId: cnepSancoes
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: CNEP sanções
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/cepim/{cnpj}:
+    get:
+      tags: [Compliance]
+      summary: CEPIM entidades sem fins lucrativos
+      operationId: cepim
+      parameters:
+        - name: cnpj
+          in: path
+          required: true
+          description: CNPJ (14 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{14}$', example: "00000000000191"}
+      responses:
+        "200":
+          description: CEPIM entidades sem fins lucrativos
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/ceaf-expulsoes/{cpf}:
+    get:
+      tags: [Compliance]
+      summary: CEAF expulsões servidor público
+      operationId: ceafExpulsoes
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: CPF (11 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{11}$', example: "12345678900"}
+      responses:
+        "200":
+          description: CEAF expulsões servidor público
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/trabalho-forcado/{documento}:
+    get:
+      tags: [Compliance]
+      summary: Lista suja trabalho forçado
+      operationId: trabalhoForcado
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: Lista suja trabalho forçado
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/pep-estendida/{cpf}:
+    get:
+      tags: [Compliance]
+      summary: PEP estendida
+      operationId: pepEstendida
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: CPF (11 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{11}$', example: "12345678900"}
+      responses:
+        "200":
+          description: PEP estendida
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/pep-exposicao/{cpf}:
+    get:
+      tags: [Compliance]
+      summary: PEP exposição política
+      operationId: pepExposicao
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: CPF (11 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{11}$', example: "12345678900"}
+      responses:
+        "200":
+          description: PEP exposição política
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/aml-vinculos/{documento}:
+    get:
+      tags: [Compliance]
+      summary: AML vínculos
+      operationId: amlVinculos
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: AML vínculos
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 1.08"
+  /consulta/confea-crea/{documento}:
+    get:
+      tags: [Compliance]
+      summary: CONFEA/CREA
+      operationId: confeaCrea
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: CONFEA/CREA
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/boa-vista-acerta-pf/{cpf}:
+    get:
+      tags: [Credito]
+      summary: Score de crédito PF (bureau parceiro)
+      operationId: boaVistaAcertaPf
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: CPF (11 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{11}$', example: "12345678900"}
+      responses:
+        "200":
+          description: Score de crédito PF (bureau parceiro)
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 16.77"
+  /consulta/boa-vista-risco-pj/{cnpj}:
+    get:
+      tags: [Credito]
+      summary: Score de risco PJ (bureau parceiro)
+      operationId: boaVistaRiscoPj
+      parameters:
+        - name: cnpj
+          in: path
+          required: true
+          description: CNPJ (14 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{14}$', example: "00000000000191"}
+      responses:
+        "200":
+          description: Score de risco PJ (bureau parceiro)
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 21.04"
+  /consulta/credito-scr-resumo/{documento}:
+    get:
+      tags: [Credito]
+      summary: SCR Banco Central resumo
+      operationId: creditoScrResumo
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: SCR Banco Central resumo
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 7.35"
+  /consulta/credito-scr-analitico/{documento}:
+    get:
+      tags: [Credito]
+      summary: SCR Banco Central analítico
+      operationId: creditoScrAnalitico
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: SCR Banco Central analítico
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 5.85"
+  /consulta/protestos-nacional/{documento}:
+    get:
+      tags: [Credito]
+      summary: Protestos nacional
+      operationId: protestosNacional
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: Protestos nacional
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 1.08"
+  /consulta/protestos-sp/{documento}:
+    get:
+      tags: [Credito]
+      summary: Protestos SP
+      operationId: protestosSp
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: Protestos SP
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/detalhamento-negativo/{documento}:
+    get:
+      tags: [Credito]
+      summary: Detalhamento negativação
+      operationId: detalhamentoNegativo
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: Detalhamento negativação
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 3.57"
+  /consulta/score-credito-quod/{documento}:
+    get:
+      tags: [Credito]
+      summary: Score de crédito alternativo
+      operationId: scoreCreditoQuod
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: Score de crédito alternativo
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 2.97"
+  /consulta/tse-situacao/{cpf}:
+    get:
+      tags: [Eleitoral]
+      summary: Situação eleitoral TSE
+      operationId: tseSituacao
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: CPF (11 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{11}$', example: "12345678900"}
+      responses:
+        "200":
+          description: Situação eleitoral TSE
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/tse-titulo/{documento}:
+    get:
+      tags: [Eleitoral]
+      summary: Título de eleitor TSE
+      operationId: tseTitulo
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: Título de eleitor TSE
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 1.08"
+  /consulta/antt-regularidade/{cnpj}:
+    get:
+      tags: [Fiscal]
+      summary: Regularidade ANTT
+      operationId: anttRegularidade
+      parameters:
+        - name: cnpj
+          in: path
+          required: true
+          description: CNPJ (14 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{14}$', example: "00000000000191"}
+      responses:
+        "200":
+          description: Regularidade ANTT
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/cadin-federal/{cnpj}:
+    get:
+      tags: [Fiscal]
+      summary: CADIN federal
+      operationId: cadinFederal
+      parameters:
+        - name: cnpj
+          in: path
+          required: true
+          description: CNPJ (14 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{14}$', example: "00000000000191"}
+      responses:
+        "200":
+          description: CADIN federal
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/cadin-sp/{documento}:
+    get:
+      tags: [Fiscal]
+      summary: CADIN São Paulo
+      operationId: cadinSp
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: CADIN São Paulo
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/pgfn-devedores/{documento}:
+    get:
+      tags: [Fiscal]
+      summary: PGFN dívida ativa
+      operationId: pgfnDevedores
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: PGFN dívida ativa
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/nfe-completa/{cnpj}:
+    get:
+      tags: [Fiscal]
+      summary: NF-e completa
+      operationId: nfeCompleta
+      parameters:
+        - name: cnpj
+          in: path
+          required: true
+          description: CNPJ (14 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{14}$', example: "00000000000191"}
+      responses:
+        "200":
+          description: NF-e completa
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 1.95"
+  /consulta/nfe-inutilizacoes/{cnpj}:
+    get:
+      tags: [Fiscal]
+      summary: NF-e inutilizações
+      operationId: nfeInutilizacoes
+      parameters:
+        - name: cnpj
+          in: path
+          required: true
+          description: CNPJ (14 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{14}$', example: "00000000000191"}
+      responses:
+        "200":
+          description: NF-e inutilizações
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 1.95"
+  /consulta/sintegra-ccc/{cnpj}:
+    get:
+      tags: [Fiscal]
+      summary: Sintegra CCC
+      operationId: sintegraCcc
+      parameters:
+        - name: cnpj
+          in: path
+          required: true
+          description: CNPJ (14 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{14}$', example: "00000000000191"}
+      responses:
+        "200":
+          description: Sintegra CCC
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/sintegra-estadual/{cnpj}:
+    get:
+      tags: [Fiscal]
+      summary: Sintegra estadual
+      operationId: sintegraEstadual
+      parameters:
+        - name: cnpj
+          in: path
+          required: true
+          description: CNPJ (14 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{14}$', example: "00000000000191"}
+      responses:
+        "200":
+          description: Sintegra estadual
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/suframa-consulta/{cnpj}:
+    get:
+      tags: [Fiscal]
+      summary: SUFRAMA
+      operationId: suframaConsulta
+      parameters:
+        - name: cnpj
+          in: path
+          required: true
+          description: CNPJ (14 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{14}$', example: "00000000000191"}
+      responses:
+        "200":
+          description: SUFRAMA
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/feriados/{ano}:
+    get:
+      tags: [Internacional]
+      summary: Feriados nacionais
+      operationId: feriados
+      parameters:
+        - name: ano
+          in: path
+          required: true
+          description: Year (YYYY)
+          schema: {type: string, example: "2024"}
+      responses:
+        "200":
+          description: Feriados nacionais
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.01"
+  /consulta/curp-mexico/{curp}:
+    get:
+      tags: [Internacional]
+      summary: CURP México
+      operationId: curpMexico
+      parameters:
+        - name: curp
+          in: path
+          required: true
+          description: Mexican CURP
+          schema: {type: string, example: "BADD110313HCMLNS09"}
+      responses:
+        "200":
+          description: CURP México
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/registration-mexico/{curp}:
+    get:
+      tags: [Internacional]
+      summary: Registro México
+      operationId: registrationMexico
+      parameters:
+        - name: curp
+          in: path
+          required: true
+          description: Mexican CURP
+          schema: {type: string, example: "BADD110313HCMLNS09"}
+      responses:
+        "200":
+          description: Registro México
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/similarity-mexico/{curp}:
+    get:
+      tags: [Internacional]
+      summary: Similaridade México
+      operationId: similarityMexico
+      parameters:
+        - name: curp
+          in: path
+          required: true
+          description: Mexican CURP
+          schema: {type: string, example: "BADD110313HCMLNS09"}
+      responses:
+        "200":
+          description: Similaridade México
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 1.08"
+  /consulta/cadastro-pf-basica/{cpf}:
+    get:
+      tags: [Pessoa Fisica]
+      summary: Cadastro PF básico
+      operationId: cadastroPfBasica
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: CPF (11 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{11}$', example: "12345678900"}
+      responses:
+        "200":
+          description: Cadastro PF básico
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.24"
+  /consulta/cadastro-pf-plus/{cpf}:
+    get:
+      tags: [Pessoa Fisica]
+      summary: Cadastro PF completo
+      operationId: cadastroPfPlus
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: CPF (11 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{11}$', example: "12345678900"}
+      responses:
+        "200":
+          description: Cadastro PF completo
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/cadastro-rf-pf/{cpf}:
+    get:
+      tags: [Pessoa Fisica]
+      summary: Cadastro Receita Federal PF
+      operationId: cadastroRfPf
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: CPF (11 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{11}$', example: "12345678900"}
+      responses:
+        "200":
+          description: Cadastro Receita Federal PF
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.63"
+  /consulta/consulta-obito/{cpf}:
+    get:
+      tags: [Pessoa Fisica]
+      summary: Consulta óbito
+      operationId: consultaObito
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: CPF (11 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{11}$', example: "12345678900"}
+      responses:
+        "200":
+          description: Consulta óbito
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/consulta_pf/{cpf}:
+    get:
+      tags: [Pessoa Fisica]
+      summary: Consulta PF consolidada
+      operationId: consultaPf
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: CPF (11 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{11}$', example: "12345678900"}
+      responses:
+        "200":
+          description: Consulta PF consolidada
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.50"
+  /consulta/nivel-socioeconomico/{cpf}:
+    get:
+      tags: [Pessoa Fisica]
+      summary: Nível socioeconômico
+      operationId: nivelSocioeconomico
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: CPF (11 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{11}$', example: "12345678900"}
+      responses:
+        "200":
+          description: Nível socioeconômico
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/beneficiario-final/{cnpj}:
+    get:
+      tags: [Pessoa Juridica]
+      summary: Beneficiário final
+      operationId: beneficiarioFinal
+      parameters:
+        - name: cnpj
+          in: path
+          required: true
+          description: CNPJ (14 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{14}$', example: "00000000000191"}
+      responses:
+        "200":
+          description: Beneficiário final
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 2.16"
+  /consulta/cadastro-pj-basica/{cnpj}:
+    get:
+      tags: [Pessoa Juridica]
+      summary: Cadastro PJ básico
+      operationId: cadastroPjBasica
+      parameters:
+        - name: cnpj
+          in: path
+          required: true
+          description: CNPJ (14 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{14}$', example: "00000000000191"}
+      responses:
+        "200":
+          description: Cadastro PJ básico
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.24"
+  /consulta/cadastro-pj-plus/{cnpj}:
+    get:
+      tags: [Pessoa Juridica]
+      summary: Cadastro PJ completo
+      operationId: cadastroPjPlus
+      parameters:
+        - name: cnpj
+          in: path
+          required: true
+          description: CNPJ (14 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{14}$', example: "00000000000191"}
+      responses:
+        "200":
+          description: Cadastro PJ completo
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/consulta-cnpj-receita/{cnpj}:
+    get:
+      tags: [Pessoa Juridica]
+      summary: CNPJ Receita Federal
+      operationId: consultaCnpjReceita
+      parameters:
+        - name: cnpj
+          in: path
+          required: true
+          description: CNPJ (14 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{14}$', example: "00000000000191"}
+      responses:
+        "200":
+          description: CNPJ Receita Federal
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.16"
+  /consulta/consulta_pj/{cnpj}:
+    get:
+      tags: [Pessoa Juridica]
+      summary: Consulta PJ consolidada
+      operationId: consultaPj
+      parameters:
+        - name: cnpj
+          in: path
+          required: true
+          description: CNPJ (14 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{14}$', example: "00000000000191"}
+      responses:
+        "200":
+          description: Consulta PJ consolidada
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.50"
+  /consulta/cadin-prefeitura-SP/{documento}:
+    get:
+      tags: [Pessoa Juridica]
+      summary: CADIN Prefeitura SP
+      operationId: cadinPrefeituraSp
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: CADIN Prefeitura SP
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.28"
+  /consulta/vinculos-societarios/{documento}:
+    get:
+      tags: [Pessoa Juridica]
+      summary: Vínculos societários
+      operationId: vinculosSocietarios
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: Vínculos societários
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 2.76"
+  /consulta/antecedentes-criminais/{cpf}:
+    get:
+      tags: [Processos Judiciais]
+      summary: Antecedentes criminais
+      operationId: antecedentesCriminais
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: CPF (11 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{11}$', example: "12345678900"}
+      responses:
+        "200":
+          description: Antecedentes criminais
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/cnj-mandados-prisao/{cpf}:
+    get:
+      tags: [Processos Judiciais]
+      summary: Mandados de prisão CNJ
+      operationId: cnjMandadosPrisao
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: CPF (11 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{11}$', example: "12345678900"}
+      responses:
+        "200":
+          description: Mandados de prisão CNJ
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 1.08"
+  /consulta/mpmt-investigacao/{documento}:
+    get:
+      tags: [Processos Judiciais]
+      summary: MP Mato Grosso investigação
+      operationId: mpmtInvestigacao
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: MP Mato Grosso investigação
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/prf-infracoes/{documento}:
+    get:
+      tags: [Processos Judiciais]
+      summary: PRF infrações
+      operationId: prfInfracoes
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: PRF infrações
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/processos-completa/{documento}:
+    get:
+      tags: [Processos Judiciais]
+      summary: Processos judiciais completo
+      operationId: processosCompleta
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: Processos judiciais completo
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 4.95"
+  /consulta/processos-agrupada/{documento}:
+    get:
+      tags: [Processos Judiciais]
+      summary: Processos judiciais agrupados
+      operationId: processosAgrupada
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: Processos judiciais agrupados
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 1.65"
+  /consulta/receita-federal-pf/{cpf}:
+    get:
+      tags: [Receita Federal]
+      summary: Receita Federal PF
+      operationId: receitaFederalPf
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: CPF (11 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{11}$', example: "12345678900"}
+      responses:
+        "200":
+          description: Receita Federal PF
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/receita-federal-pj/{cnpj}:
+    get:
+      tags: [Receita Federal]
+      summary: Receita Federal PJ
+      operationId: receitaFederalPj
+      parameters:
+        - name: cnpj
+          in: path
+          required: true
+          description: CNPJ (14 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{14}$', example: "00000000000191"}
+      responses:
+        "200":
+          description: Receita Federal PJ
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/receita-federal-pj-qsa/{cnpj}:
+    get:
+      tags: [Receita Federal]
+      summary: Receita Federal PJ + QSA completo
+      operationId: receitaFederalPjQsa
+      parameters:
+        - name: cnpj
+          in: path
+          required: true
+          description: CNPJ (14 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{14}$', example: "00000000000191"}
+      responses:
+        "200":
+          description: Receita Federal PJ + QSA completo
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 4.20"
+  /consulta/restituicao-irpf/{cpf}:
+    get:
+      tags: [Receita Federal]
+      summary: Restituição IRPF
+      operationId: restituicaoIrpf
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: CPF (11 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{11}$', example: "12345678900"}
+      responses:
+        "200":
+          description: Restituição IRPF
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/simples-nacional/{cnpj}:
+    get:
+      tags: [Receita Federal]
+      summary: Simples Nacional
+      operationId: simplesNacional
+      parameters:
+        - name: cnpj
+          in: path
+          required: true
+          description: CNPJ (14 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{14}$', example: "00000000000191"}
+      responses:
+        "200":
+          description: Simples Nacional
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/apf-rural/{documento}:
+    get:
+      tags: [Rural]
+      summary: APF rural
+      operationId: apfRural
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: APF rural
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/car-ambiental/{documento}:
+    get:
+      tags: [Rural]
+      summary: CAR ambiental
+      operationId: carAmbiental
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: CAR ambiental
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/cafir-imoveis/{documento}:
+    get:
+      tags: [Rural]
+      summary: CAFIR imóveis rurais
+      operationId: cafirImoveis
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: CAFIR imóveis rurais
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/dap-pf/{cpf}:
+    get:
+      tags: [Rural]
+      summary: DAP pessoa física
+      operationId: dapPf
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: CPF (11 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{11}$', example: "12345678900"}
+      responses:
+        "200":
+          description: DAP pessoa física
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 1.08"
+  /consulta/dap-pj/{cnpj}:
+    get:
+      tags: [Rural]
+      summary: DAP pessoa jurídica
+      operationId: dapPj
+      parameters:
+        - name: cnpj
+          in: path
+          required: true
+          description: CNPJ (14 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{14}$', example: "00000000000191"}
+      responses:
+        "200":
+          description: DAP pessoa jurídica
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 1.08"
+  /consulta/fincen-crimes/{documento}:
+    get:
+      tags: [Sancoes Internacionais]
+      summary: FinCEN crimes financeiros
+      operationId: fincenCrimes
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: FinCEN crimes financeiros
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/onu-sancoes/{documento}:
+    get:
+      tags: [Sancoes Internacionais]
+      summary: ONU sanções
+      operationId: onuSancoes
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: ONU sanções
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/fbi-wanted/{nome}:
+    get:
+      tags: [Sancoes Internacionais]
+      summary: FBI procurados
+      operationId: fbiWanted
+      parameters:
+        - name: nome
+          in: path
+          required: true
+          description: Full name
+          schema: {type: string, example: "Joao Silva"}
+      responses:
+        "200":
+          description: FBI procurados
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/interpol-consulta/{nome}:
+    get:
+      tags: [Sancoes Internacionais]
+      summary: Interpol
+      operationId: interpolConsulta
+      parameters:
+        - name: nome
+          in: path
+          required: true
+          description: Full name
+          schema: {type: string, example: "Joao Silva"}
+      responses:
+        "200":
+          description: Interpol
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 1.95"
+  /consulta/eu-sancoes/{documento}:
+    get:
+      tags: [Sancoes Internacionais]
+      summary: UE sanções
+      operationId: euSancoes
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: UE sanções
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 1.95"
+  /consulta/uk-sancoes/{documento}:
+    get:
+      tags: [Sancoes Internacionais]
+      summary: UK sanções
+      operationId: ukSancoes
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: UK sanções
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 1.95"
+  /consulta/ofac-sancoes/{nome}:
+    get:
+      tags: [Sancoes Internacionais]
+      summary: OFAC sanções
+      operationId: ofacSancoes
+      parameters:
+        - name: nome
+          in: path
+          required: true
+          description: Full name
+          schema: {type: string, example: "Joao Silva"}
+      responses:
+        "200":
+          description: OFAC sanções
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/pis-trabalho/{cpf}:
+    get:
+      tags: [Trabalho]
+      summary: PIS trabalho
+      operationId: pisTrabalho
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: CPF (11 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{11}$', example: "12345678900"}
+      responses:
+        "200":
+          description: PIS trabalho
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/fgts-regularidade/{cnpj}:
+    get:
+      tags: [Trabalho]
+      summary: FGTS regularidade
+      operationId: fgtsRegularidade
+      parameters:
+        - name: cnpj
+          in: path
+          required: true
+          description: CNPJ (14 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{14}$', example: "00000000000191"}
+      responses:
+        "200":
+          description: FGTS regularidade
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/vinculo-empregaticio/{cpf}:
+    get:
+      tags: [Trabalho]
+      summary: Vínculo empregatício
+      operationId: vinculoEmpregaticio
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          description: CPF (11 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{11}$', example: "12345678900"}
+      responses:
+        "200":
+          description: Vínculo empregatício
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 1.08"
+  /consulta/tj-certidao/{documento}:
+    get:
+      tags: [Tribunais]
+      summary: TJ certidão
+      operationId: tjCertidao
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: TJ certidão
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/trf-certidao/{documento}:
+    get:
+      tags: [Tribunais]
+      summary: TRF certidão
+      operationId: trfCertidao
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: TRF certidão
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/mpt-consulta/{documento}:
+    get:
+      tags: [Tribunais]
+      summary: MPT consulta
+      operationId: mptConsulta
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: MPT consulta
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 1.95"
+  /consulta/tj-processos/{documento}:
+    get:
+      tags: [Tribunais]
+      summary: TJ processos
+      operationId: tjProcessos
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: TJ processos
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/tcu-processo/{documento}:
+    get:
+      tags: [Tribunais]
+      summary: TCU processo
+      operationId: tcuProcesso
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: TCU processo
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/tcu-consolidada/{cnpj}:
+    get:
+      tags: [Tribunais]
+      summary: TCU consolidada
+      operationId: tcuConsolidada
+      parameters:
+        - name: cnpj
+          in: path
+          required: true
+          description: CNPJ (14 digits, no mask)
+          schema: {type: string, pattern: '^[0-9]{14}$', example: "00000000000191"}
+      responses:
+        "200":
+          description: TCU consolidada
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 1.08"
+  /consulta/tcu-licitante/{documento}:
+    get:
+      tags: [Tribunais]
+      summary: TCU licitante
+      operationId: tcuLicitante
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: TCU licitante
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/trt-consulta/{documento}:
+    get:
+      tags: [Tribunais]
+      summary: TRT consulta
+      operationId: trtConsulta
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: TRT consulta
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
+  /consulta/consulta-veicular/{placa}:
+    get:
+      tags: [Veicular]
+      summary: Consulta veicular por placa
+      operationId: consultaVeicular
+      parameters:
+        - name: placa
+          in: path
+          required: true
+          description: Brazilian vehicle plate
+          schema: {type: string, example: "ABC1234"}
+      responses:
+        "200":
+          description: Consulta veicular por placa
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 8.10"
+  /consulta/historico-veiculos/{documento}:
+    get:
+      tags: [Veicular]
+      summary: Histórico de veículos
+      operationId: historicoVeiculos
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          description: CPF (11 digits) or CNPJ (14 digits)
+          schema: {type: string, example: "12345678900"}
+      responses:
+        "200":
+          description: Histórico de veículos
+          headers:
+            X-Request-Cost:
+              $ref: '#/components/headers/X-Request-Cost'
+            X-Balance-Remaining:
+              $ref: '#/components/headers/X-Balance-Remaining'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsultaResponse'
+        "401": {$ref: '#/components/responses/Unauthorized'}
+        "402": {$ref: '#/components/responses/InsufficientBalance'}
+        "429": {$ref: '#/components/responses/RateLimited'}
+      x-cost: "R$ 0.54"
