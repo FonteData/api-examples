@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate OpenAPI spec
+        run: |
+          npm install -g @redocly/cli
+          redocly lint openapi.yaml
+
+      - name: Python syntax check
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: find python/ -name "*.py" -exec python -m py_compile {} +
+
+      - name: Node.js syntax check
+        run: find nodejs/ -name "*.js" -exec node --check {} +
+
+      - name: PHP syntax check
+        run: find php/ -name "*.php" -exec php -l {} +
+
+      - name: Shell syntax check
+        run: find curl/ -name "*.sh" -exec bash -n {} +
+
+      - name: Go syntax check
+        uses: actions/setup-go@v5
+        with:
+          go-version: 'stable'
+      - run: |
+          for f in go/*.go; do
+            gofmt -e "$f" > /dev/null
+          done
+
+  notify:
+    runs-on: ubuntu-latest
+    needs: validate
+    if: always()
+    steps:
+      - name: Telegram notification
+        env:
+          TG_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TG_CHAT: ${{ secrets.TELEGRAM_CHAT_ID }}
+          STATUS: ${{ needs.validate.result }}
+          PR_NUM: ${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          REPO: ${{ github.repository }}
+        run: |
+          if [ "$STATUS" = "success" ]; then
+            ICON="✅"; MSG="Validação OK"
+          else
+            ICON="❌"; MSG="Validação FALHOU"
+          fi
+          TEXT="${ICON} <b>${REPO}</b> — PR #${PR_NUM} ${MSG}
+          ${PR_TITLE}
+          https://github.com/${REPO}/pull/${PR_NUM}"
+          curl -sf -X POST "https://api.telegram.org/bot${TG_TOKEN}/sendMessage" \
+            -d chat_id="${TG_CHAT}" -d text="${TEXT}" -d parse_mode=HTML
