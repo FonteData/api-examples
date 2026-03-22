@@ -1,0 +1,918 @@
+{
+  "info": {
+    "name": "FonteData API",
+    "_postman_id": "fontedata-api-v1",
+    "description": "Colecao completa da FonteData API — 108+ endpoints de dados brasileiros.\n\nConfigure a variavel de ambiente API_KEY com sua chave de API.\n\nDocumentacao: https://fontedata.com/docs",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://app.fontedata.com/api/v1/consulta"
+    },
+    {
+      "key": "API_KEY",
+      "value": "fd_live_SUA_CHAVE"
+    },
+    {
+      "key": "CNPJ",
+      "value": "00000000000191"
+    },
+    {
+      "key": "CPF",
+      "value": "12345678900"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "X-API-Key"
+      },
+      {
+        "key": "value",
+        "value": "{{API_KEY}}"
+      },
+      {
+        "key": "in",
+        "value": "header"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Pessoa Juridica",
+      "item": [
+        {
+          "name": "Consultar CNPJ Receita Federal",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/consulta-cnpj-receita/{{CNPJ}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "consulta-cnpj-receita",
+                "{{CNPJ}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "CNPJ + QSA completo",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/receita-federal-pj-qsa/{{CNPJ}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "receita-federal-pj-qsa",
+                "{{CNPJ}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "Cadastro PJ basico",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/cadastro-pj-basica/{{CNPJ}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "cadastro-pj-basica",
+                "{{CNPJ}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "Cadastro PJ plus",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/cadastro-pj-plus/{{CNPJ}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "cadastro-pj-plus",
+                "{{CNPJ}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "Consulta PJ consolidada",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/consulta_pj/{{CNPJ}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "consulta_pj",
+                "{{CNPJ}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "Beneficiario final",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/beneficiario-final/{{CNPJ}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "beneficiario-final",
+                "{{CNPJ}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "Vinculos societarios",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/vinculos-societarios/{{CNPJ}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "vinculos-societarios",
+                "{{CNPJ}}"
+              ]
+            },
+            "header": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pessoa Fisica",
+      "item": [
+        {
+          "name": "Cadastro PF basico",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/cadastro-pf-basica/{{CPF}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "cadastro-pf-basica",
+                "{{CPF}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "Cadastro PF plus",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/cadastro-pf-plus/{{CPF}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "cadastro-pf-plus",
+                "{{CPF}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "Receita Federal PF",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/receita-federal-pf/{{CPF}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "receita-federal-pf",
+                "{{CPF}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "Consulta PF consolidada",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/consulta_pf/{{CPF}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "consulta_pf",
+                "{{CPF}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "Consulta obito",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/consulta-obito/{{CPF}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "consulta-obito",
+                "{{CPF}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "Nivel socioeconomico",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/nivel-socioeconomico/{{CPF}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "nivel-socioeconomico",
+                "{{CPF}}"
+              ]
+            },
+            "header": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "Compliance",
+      "item": [
+        {
+          "name": "CEIS sancoes CGU",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/ceis-sancoes/{{CNPJ}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ceis-sancoes",
+                "{{CNPJ}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "CNEP punicoes CGU",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/cnep-sancoes/{{CNPJ}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "cnep-sancoes",
+                "{{CNPJ}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "PEP exposicao politica",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/pep-exposicao/{{CPF}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "pep-exposicao",
+                "{{CPF}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "PEP estendida",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/pep-estendida/{{CPF}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "pep-estendida",
+                "{{CPF}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "Trabalho forcado",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/trabalho-forcado/{{CNPJ}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "trabalho-forcado",
+                "{{CNPJ}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "Improbidade CNIA",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/cnia-improbidade/{{CPF}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "cnia-improbidade",
+                "{{CPF}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "AML vinculos",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/aml-vinculos/{{CNPJ}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "aml-vinculos",
+                "{{CNPJ}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "CGU consolidada",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/cgu-consulta/{{CNPJ}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "cgu-consulta",
+                "{{CNPJ}}"
+              ]
+            },
+            "header": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sancoes Internacionais",
+      "item": [
+        {
+          "name": "OFAC (EUA)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/ofac-sancoes/{{CPF}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ofac-sancoes",
+                "{{CPF}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "ONU sancoes",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/onu-sancoes/{{CPF}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "onu-sancoes",
+                "{{CPF}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "Uniao Europeia",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/eu-sancoes/{{CPF}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "eu-sancoes",
+                "{{CPF}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "Reino Unido",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/uk-sancoes/{{CPF}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "uk-sancoes",
+                "{{CPF}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "FBI procurados",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/fbi-wanted/{{CPF}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "fbi-wanted",
+                "{{CPF}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "Interpol",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/interpol-consulta/{{CPF}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "interpol-consulta",
+                "{{CPF}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "FinCEN",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/fincen-crimes/{{CPF}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "fincen-crimes",
+                "{{CPF}}"
+              ]
+            },
+            "header": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "Processos Judiciais",
+      "item": [
+        {
+          "name": "Antecedentes criminais",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/antecedentes-criminais/{{CPF}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "antecedentes-criminais",
+                "{{CPF}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "Processos completo",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/processos-completa/{{CNPJ}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "processos-completa",
+                "{{CNPJ}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "Processos agrupados",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/processos-agrupada/{{CNPJ}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "processos-agrupada",
+                "{{CNPJ}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "Mandados de prisao CNJ",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/cnj-mandados-prisao/{{CPF}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "cnj-mandados-prisao",
+                "{{CPF}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "TJ certidao",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/tj-certidao/{{CNPJ}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "tj-certidao",
+                "{{CNPJ}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "TRF certidao",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/trf-certidao/{{CNPJ}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "trf-certidao",
+                "{{CNPJ}}"
+              ]
+            },
+            "header": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "Fiscal",
+      "item": [
+        {
+          "name": "PGFN divida ativa",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/pgfn-devedores/{{CNPJ}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "pgfn-devedores",
+                "{{CNPJ}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "CND debitos",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/cnd-debitos/{{CNPJ}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "cnd-debitos",
+                "{{CNPJ}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "CNDT trabalhista",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/tst-cndt/{{CNPJ}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "tst-cndt",
+                "{{CNPJ}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "FGTS regularidade",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/fgts-regularidade/{{CNPJ}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "fgts-regularidade",
+                "{{CNPJ}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "CADIN federal",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/cadin-federal/{{CNPJ}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "cadin-federal",
+                "{{CNPJ}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "Simples Nacional",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/simples-nacional/{{CNPJ}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "simples-nacional",
+                "{{CNPJ}}"
+              ]
+            },
+            "header": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "Credito",
+      "item": [
+        {
+          "name": "Score credito PF",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/boa-vista-acerta-pf/{{CPF}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "boa-vista-acerta-pf",
+                "{{CPF}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "Score risco PJ",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/boa-vista-risco-pj/{{CNPJ}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "boa-vista-risco-pj",
+                "{{CNPJ}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "SCR Banco Central resumo",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/credito-scr-resumo/{{CNPJ}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "credito-scr-resumo",
+                "{{CNPJ}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "Protestos nacional",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/protestos-nacional/{{CNPJ}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "protestos-nacional",
+                "{{CNPJ}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "Score alternativo",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/score-credito-quod/{{CPF}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "score-credito-quod",
+                "{{CPF}}"
+              ]
+            },
+            "header": []
+          }
+        }
+      ]
+    },
+    {
+      "name": "Ambiental",
+      "item": [
+        {
+          "name": "IBAMA regularidade",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/ibama-regularidade/{{CNPJ}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ibama-regularidade",
+                "{{CNPJ}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "IBAMA embargo",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/ibama-embargo/{{CNPJ}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ibama-embargo",
+                "{{CNPJ}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "IBAMA debitos",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/ibama-debitos/{{CNPJ}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "ibama-debitos",
+                "{{CNPJ}}"
+              ]
+            },
+            "header": []
+          }
+        },
+        {
+          "name": "CAR ambiental",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/car-ambiental/{{CNPJ}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "car-ambiental",
+                "{{CNPJ}}"
+              ]
+            },
+            "header": []
+          }
+        }
+      ]
+    }
+  ]
+}
