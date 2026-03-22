@@ -1,10 +1,15 @@
 # FonteData — API Examples
 
-> Exemplos práticos de integração com a [FonteData API](https://fontedata.com) — a plataforma brasileira de inteligência de dados com 108+ endpoints de CNPJ, CPF, KYC, compliance, processos judiciais e sanções internacionais.
+[![Sync](https://github.com/FonteData/fontedata-portal/actions/workflows/sync-api-examples.yml/badge.svg)](https://github.com/FonteData/fontedata-portal/actions/workflows/sync-api-examples.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
+[![108+ endpoints](https://img.shields.io/badge/endpoints-108%2B-blue)](https://fontedata.com/docs)
+[![Docs](https://img.shields.io/badge/docs-fontedata.com-teal)](https://fontedata.com/docs)
+
+> Exemplos praticos de integracao com a [FonteData API](https://fontedata.com) — a plataforma brasileira de inteligencia de dados com 108+ endpoints de CNPJ, CPF, KYC, compliance, processos judiciais e sancoes internacionais.
 
 ## Quick Start
 
-1. **Crie sua conta** em [app.fontedata.com/signup](https://app.fontedata.com/signup) — gratuito, R$50 em créditos, sem cartão
+1. **Crie sua conta** em [app.fontedata.com/signup](https://app.fontedata.com/signup) — gratuito, R$50 em creditos, sem cartao
 2. **Copie sua API key** no painel
 3. **Substitua** `fd_live_SUA_CHAVE` nos exemplos pela sua chave
 
@@ -15,47 +20,59 @@ curl -H "X-API-Key: fd_live_SUA_CHAVE" \
 
 ## Exemplos por linguagem
 
-| Linguagem | Pasta |
-|---|---|
-| cURL (bash) | [`/curl`](./curl) |
-| Python | [`/python`](./python) |
-| Node.js | [`/nodejs`](./nodejs) |
+| Linguagem | Pasta | Dependencias |
+|---|---|---|
+| cURL (bash) | [`/curl`](./curl) | nenhuma |
+| Python | [`/python`](./python) | `pip install -r python/requirements.txt` |
+| Node.js | [`/nodejs`](./nodejs) | Node 18+, sem deps |
+| PHP | [`/php`](./php) | PHP 7.4+, ext-curl |
+| Go | [`/go`](./go) | Go 1.21+, stdlib only |
 
 ## Casos de Uso
 
-| Caso | Arquivos |
-|---|---|
-| Consultar CNPJ | `curl/cnpj.sh` · `python/cnpj.py` · `nodejs/cnpj.js` |
-| Consultar CPF | `curl/cpf.sh` · `python/cpf.py` |
-| KYC Pessoa Física | `python/kyc_pf.py` · `nodejs/kyc_pf.js` |
-| KYC Pessoa Jurídica | `python/kyc_pj.py` |
-| Due Diligence completa | `python/due_diligence.py` |
-| Background Check admissional | `python/background_check.py` |
-| Compliance de fornecedores | `python/compliance_fornecedor.py` |
-| Sanções internacionais | `curl/sancoes.sh` |
+| Caso | Python | Node.js | PHP | Go | cURL |
+|---|---|---|---|---|---|
+| Consultar CNPJ | `cnpj.py` | `cnpj.js` | `cnpj.php` | `cnpj.go` | `cnpj.sh` |
+| Consultar CPF | `cpf.py` | — | — | — | `cpf.sh` |
+| KYC Pessoa Fisica | `kyc_pf.py` | `kyc_pf.js` | `kyc_pf.php` | `kyc_pf.go` | — |
+| KYC Pessoa Juridica | `kyc_pj.py` | — | — | — | — |
+| Due Diligence completa | `due_diligence.py` | — | — | — | — |
+| Background Check | `background_check.py` | — | — | — | — |
+| Compliance fornecedores | `compliance_fornecedor.py` | — | — | — | — |
+| Sancoes internacionais | — | — | — | — | `sancoes.sh` |
 
-## Autenticação
+## Postman
+
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://fontedata.com/docs)
+
+Importe `FonteData.postman_collection.json` diretamente no Postman. Configure a variavel de ambiente `API_KEY` com sua chave.
+
+## Autenticacao
 
 ```
 X-API-Key: fd_live_SUA_CHAVE
 ```
 
-## Headers de resposta úteis
+## Headers de resposta uteis
 
-| Header | Descrição |
+| Header | Descricao |
 |---|---|
 | `X-Request-Cost` | Custo debitado em BRL |
 | `X-Balance-Remaining` | Saldo restante |
-| `X-Request-Id` | ID único para debug |
-| `X-RateLimit-Remaining-RPM` | Requisições restantes/minuto |
+| `X-Request-Id` | ID unico para debug |
+| `X-RateLimit-Remaining-RPM` | Requisicoes restantes/minuto |
 
 ## Links
 
-- 📖 [Documentação completa](https://fontedata.com/docs)
-- 💰 [Preços](https://fontedata.com/pricing)
-- 💬 [Suporte via WhatsApp](https://wa.me/5511991220174)
-- 🔑 [Criar conta grátis](https://app.fontedata.com/signup)
+- Documentacao completa: https://fontedata.com/docs
+- Precos: https://fontedata.com/pricing
+- Suporte via WhatsApp: https://wa.me/5511991220174
+- Criar conta gratis: https://app.fontedata.com/signup
+
+## Contribuindo
+
+Veja [CONTRIBUTING.md](./CONTRIBUTING.md). PRs com exemplos em novas linguagens sao bem-vindos.
 
 ---
 
-> Este repositório é atualizado automaticamente quando a documentação da FonteData é atualizada.
+> Este repositorio e atualizado automaticamente quando a documentacao da FonteData e atualizada.
