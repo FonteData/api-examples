@@ -1,0 +1,638 @@
+openapi: 3.1.0
+info:
+  title: FonteData API
+  version: "1.0"
+  description: |
+    Brazilian data intelligence REST API aggregating 108+ public and private data sources.
+    Provides CNPJ, CPF, KYC, compliance, judicial records, and international sanctions data.
+    Pre-paid credit model, no subscription required.
+  contact:
+    name: FonteData Support
+    url: https://wa.me/5511991220174
+    email: contato@fontedata.com
+  license:
+    name: Commercial
+    url: https://fontedata.com/terms
+  x-logo:
+    url: https://fontedata.com/logo.svg
+
+servers:
+  - url: https://app.fontedata.com/api/v1
+    description: Production
+
+security:
+  - ApiKeyAuth: []
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API key obtained from https://app.fontedata.com
+
+  headers:
+    X-Request-Cost:
+      description: Cost deducted in BRL
+      schema: { type: string, example: "0.54" }
+    X-Balance-Remaining:
+      description: Remaining balance in BRL
+      schema: { type: string, example: "47.23" }
+    X-Request-Id:
+      description: Unique request ID for debugging
+      schema: { type: string }
+    X-RateLimit-Remaining-RPM:
+      description: Remaining requests per minute
+      schema: { type: integer }
+
+  responses:
+    Unauthorized:
+      description: Invalid or missing API key
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error: { type: string, example: "invalid_api_key" }
+    InsufficientBalance:
+      description: Insufficient credit balance
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error: { type: string, example: "insufficient_balance" }
+    NotFound:
+      description: Resource not found
+    RateLimited:
+      description: Rate limit exceeded
+
+  schemas:
+    ConsultaResponse:
+      type: object
+      description: Generic consultation response (varies by endpoint)
+      properties:
+        cached:
+          type: boolean
+          description: Whether the response was served from cache
+
+tags:
+  - name: Pessoa Juridica
+    description: Company data (CNPJ)
+  - name: Pessoa Fisica
+    description: Individual data (CPF)
+  - name: Compliance
+    description: Sanctions and compliance lists
+  - name: Sancoes Internacionais
+    description: International sanctions (OFAC, UN, EU, UK)
+  - name: Processos Judiciais
+    description: Judicial records
+  - name: Fiscal
+    description: Tax and fiscal certifications
+  - name: Credito
+    description: Credit score and debt data
+  - name: Ambiental
+    description: Environmental compliance (IBAMA)
+  - name: Certidoes
+    description: Official certifications
+  - name: Beneficios Sociais
+    description: Social benefits data
+  - name: Trabalho
+    description: Employment data
+  - name: Tribunais
+    description: Court records
+  - name: Rural
+    description: Rural registry data
+  - name: Veicular
+    description: Vehicle data
+  - name: Antifraude
+    description: Anti-fraud and PIX key validation
+  - name: Eleitoral
+    description: Electoral data
+  - name: Receita Federal
+    description: Brazilian Federal Revenue data
+  - name: Banco Central
+    description: Central Bank data
+  - name: Internacional
+    description: International data
+
+paths:
+  /consulta/consulta-cnpj-receita/{cnpj}:
+    get:
+      tags: [Pessoa Juridica]
+      summary: CNPJ Receita Federal
+      description: Company data from Receita Federal. Razao social, CNAE, situacao cadastral, address, capital social.
+      operationId: consultaCnpjReceita
+      parameters:
+        - name: cnpj
+          in: path
+          required: true
+          schema: { type: string, pattern: '^[0-9]{14}$', example: "00000000000191" }
+      responses:
+        "200":
+          description: Company data
+          headers:
+            X-Request-Cost: { $ref: '#/components/headers/X-Request-Cost' }
+            X-Balance-Remaining: { $ref: '#/components/headers/X-Balance-Remaining' }
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cnpj: { type: string }
+                  razao_social: { type: string }
+                  nome_fantasia: { type: string }
+                  situacao_cadastral: { type: string }
+                  data_situacao_cadastral: { type: string }
+                  cnae_fiscal: { type: integer }
+                  cnae_fiscal_descricao: { type: string }
+                  natureza_juridica: { type: string }
+                  endereco: { type: string }
+                  municipio: { type: string }
+                  uf: { type: string }
+                  cep: { type: string }
+                  capital_social: { type: number }
+                  porte: { type: string }
+                  data_inicio_atividade: { type: string }
+        "401": { $ref: '#/components/responses/Unauthorized' }
+        "402": { $ref: '#/components/responses/InsufficientBalance' }
+        "429": { $ref: '#/components/responses/RateLimited' }
+      x-cost: "R$ 0.16"
+
+  /consulta/receita-federal-pj-qsa/{cnpj}:
+    get:
+      tags: [Receita Federal]
+      summary: CNPJ + QSA completo
+      description: Company data with full shareholder structure (QSA) including CPF of each partner.
+      operationId: receitaFederalPjQsa
+      parameters:
+        - name: cnpj
+          in: path
+          required: true
+          schema: { type: string, pattern: '^[0-9]{14}$' }
+      responses:
+        "200":
+          description: Company data with QSA
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ConsultaResponse'
+                  - type: object
+                    properties:
+                      qsa:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            nome_socio: { type: string }
+                            cpf_cnpj_socio: { type: string }
+                            qualificacao_socio: { type: string }
+                            data_entrada_sociedade: { type: string }
+                            faixa_etaria: { type: string }
+        "401": { $ref: '#/components/responses/Unauthorized' }
+        "402": { $ref: '#/components/responses/InsufficientBalance' }
+      x-cost: "R$ 4.20"
+
+  /consulta/cadastro-pf-basica/{cpf}:
+    get:
+      tags: [Pessoa Fisica]
+      summary: Cadastro PF basico
+      operationId: cadastroPfBasica
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          schema: { type: string, pattern: '^[0-9]{11}$', example: "12345678900" }
+      responses:
+        "200":
+          description: Basic individual data
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ConsultaResponse' }
+        "401": { $ref: '#/components/responses/Unauthorized' }
+        "402": { $ref: '#/components/responses/InsufficientBalance' }
+      x-cost: "R$ 0.24"
+
+  /consulta/receita-federal-pf/{cpf}:
+    get:
+      tags: [Receita Federal]
+      summary: CPF Receita Federal
+      operationId: receitaFederalPf
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          schema: { type: string, pattern: '^[0-9]{11}$' }
+      responses:
+        "200":
+          description: Individual data from Receita Federal
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  nome: { type: string }
+                  cpf: { type: string }
+                  situacao: { type: string }
+                  data_nascimento: { type: string }
+      x-cost: "R$ 0.54"
+
+  /consulta/pep-exposicao/{cpf}:
+    get:
+      tags: [Compliance]
+      summary: PEP - Pessoa Politicamente Exposta
+      operationId: pepExposicao
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          schema: { type: string, pattern: '^[0-9]{11}$' }
+      responses:
+        "200":
+          description: PEP exposure data
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ConsultaResponse' }
+      x-cost: "R$ 0.54"
+
+  /consulta/ceis-sancoes/{documento}:
+    get:
+      tags: [Compliance]
+      summary: CEIS - Cadastro de Empresas Inidôneas e Suspensas (CGU)
+      operationId: ceisSancoes
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          schema: { type: string, example: "00000000000191" }
+      responses:
+        "200":
+          description: CEIS sanctions data
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ConsultaResponse' }
+      x-cost: "R$ 0.54"
+
+  /consulta/cnep-sancoes/{documento}:
+    get:
+      tags: [Compliance]
+      summary: CNEP - Cadastro Nacional de Empresas Punidas (CGU)
+      operationId: cnepSancoes
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: CNEP sanctions data
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ConsultaResponse' }
+      x-cost: "R$ 0.54"
+
+  /consulta/ofac-sancoes/{documento}:
+    get:
+      tags: [Sancoes Internacionais]
+      summary: OFAC sanctions (USA)
+      operationId: ofacSancoes
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: OFAC sanctions data
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ConsultaResponse' }
+      x-cost: "R$ 0.54"
+
+  /consulta/onu-sancoes/{documento}:
+    get:
+      tags: [Sancoes Internacionais]
+      summary: UN sanctions
+      operationId: onuSancoes
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: UN sanctions data
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ConsultaResponse' }
+      x-cost: "R$ 0.54"
+
+  /consulta/eu-sancoes/{documento}:
+    get:
+      tags: [Sancoes Internacionais]
+      summary: EU sanctions
+      operationId: euSancoes
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: EU sanctions data
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ConsultaResponse' }
+      x-cost: "R$ 1.95"
+
+  /consulta/uk-sancoes/{documento}:
+    get:
+      tags: [Sancoes Internacionais]
+      summary: UK sanctions
+      operationId: ukSancoes
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: UK sanctions data
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ConsultaResponse' }
+      x-cost: "R$ 1.95"
+
+  /consulta/antecedentes-criminais/{cpf}:
+    get:
+      tags: [Processos Judiciais]
+      summary: Antecedentes criminais
+      operationId: antecedentesCriminais
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          schema: { type: string, pattern: '^[0-9]{11}$' }
+      responses:
+        "200":
+          description: Criminal records
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ConsultaResponse' }
+      x-cost: "R$ 0.54"
+
+  /consulta/processos-completa/{documento}:
+    get:
+      tags: [Processos Judiciais]
+      summary: Processos judiciais completo
+      description: Full judicial records across all Brazilian courts (TJ, TRF, TRT, STJ, STF).
+      operationId: processosCompleta
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Full judicial records
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ConsultaResponse' }
+      x-cost: "R$ 4.95"
+
+  /consulta/processos-agrupada/{documento}:
+    get:
+      tags: [Processos Judiciais]
+      summary: Processos judiciais agrupados
+      operationId: processosAgrupada
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Grouped judicial records
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ConsultaResponse' }
+      x-cost: "R$ 1.65"
+
+  /consulta/pgfn-devedores/{documento}:
+    get:
+      tags: [Fiscal]
+      summary: PGFN - Divida ativa federal
+      operationId: pgfnDevedores
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Federal tax debt data
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ConsultaResponse' }
+      x-cost: "R$ 0.54"
+
+  /consulta/tst-cndt/{documento}:
+    get:
+      tags: [Fiscal]
+      summary: CNDT - Certidao Negativa de Debitos Trabalhistas
+      operationId: tstCndt
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Labor debt certification
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ConsultaResponse' }
+      x-cost: "R$ 0.54"
+
+  /consulta/fgts-regularidade/{cnpj}:
+    get:
+      tags: [Fiscal]
+      summary: FGTS regularidade
+      operationId: fgtsRegularidade
+      parameters:
+        - name: cnpj
+          in: path
+          required: true
+          schema: { type: string, pattern: '^[0-9]{14}$' }
+      responses:
+        "200":
+          description: FGTS regularity data
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ConsultaResponse' }
+      x-cost: "R$ 0.54"
+
+  /consulta/ibama-regularidade/{documento}:
+    get:
+      tags: [Ambiental]
+      summary: IBAMA - Regularidade ambiental
+      operationId: ibamaRegularidade
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: IBAMA environmental regularity
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ConsultaResponse' }
+      x-cost: "R$ 0.54"
+
+  /consulta/protestos-nacional/{documento}:
+    get:
+      tags: [Credito]
+      summary: Protestos nacional
+      operationId: protestosNacional
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: National protest records
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ConsultaResponse' }
+      x-cost: "R$ 1.08"
+
+  /consulta/beneficiario-final/{cnpj}:
+    get:
+      tags: [Pessoa Juridica]
+      summary: Beneficiario final
+      description: Ultimate beneficial owner (UBO) data.
+      operationId: beneficiarioFinal
+      parameters:
+        - name: cnpj
+          in: path
+          required: true
+          schema: { type: string, pattern: '^[0-9]{14}$' }
+      responses:
+        "200":
+          description: UBO data
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ConsultaResponse' }
+      x-cost: "R$ 2.16"
+
+  /consulta/antifraude-pix/{documento}:
+    get:
+      tags: [Antifraude]
+      summary: Validacao e risco de chave PIX
+      operationId: antifraude Pix
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: PIX key ownership and risk data
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ConsultaResponse' }
+      x-cost: "R$ 2.33"
+
+  /consulta/vinculo-empregaticio/{cpf}:
+    get:
+      tags: [Trabalho]
+      summary: Vinculo empregaticio
+      operationId: vinculoEmpregaticio
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          schema: { type: string, pattern: '^[0-9]{11}$' }
+      responses:
+        "200":
+          description: Employment history data
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ConsultaResponse' }
+      x-cost: "R$ 1.08"
+
+  /consulta/cnj-mandados-prisao/{cpf}:
+    get:
+      tags: [Processos Judiciais]
+      summary: Mandados de prisao CNJ
+      operationId: cnjMandadosPrisao
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          schema: { type: string, pattern: '^[0-9]{11}$' }
+      responses:
+        "200":
+          description: Arrest warrants data
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ConsultaResponse' }
+      x-cost: "R$ 1.08"
+
+  /consulta/tse-situacao/{cpf}:
+    get:
+      tags: [Eleitoral]
+      summary: Situacao eleitoral TSE
+      operationId: tseSituacao
+      parameters:
+        - name: cpf
+          in: path
+          required: true
+          schema: { type: string, pattern: '^[0-9]{11}$' }
+      responses:
+        "200":
+          description: Electoral status data
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ConsultaResponse' }
+      x-cost: "R$ 0.54"
+
+  /consulta/consulta-veicular/{placa}:
+    get:
+      tags: [Veicular]
+      summary: Consulta veicular por placa
+      operationId: consultaVeicular
+      parameters:
+        - name: placa
+          in: path
+          required: true
+          schema: { type: string, example: "ABC1234" }
+      responses:
+        "200":
+          description: Vehicle data
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ConsultaResponse' }
+      x-cost: "R$ 8.10"
+
+  /consulta/credito-scr-resumo/{documento}:
+    get:
+      tags: [Credito]
+      summary: SCR Banco Central - resumo
+      description: Credit information from Banco Central SCR (Sistema de Informacoes de Credito).
+      operationId: creditoScrResumo
+      parameters:
+        - name: documento
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: SCR credit summary
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ConsultaResponse' }
+      x-cost: "R$ 7.35"
